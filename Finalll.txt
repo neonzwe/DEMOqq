@@ -1,0 +1,123 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Data.Entity;
+
+namespace DEMO
+{
+    public partial class Window1 : Window
+    {
+        private zitraksEntities db = new zitraksEntities();
+        private List<Материалы> материалыList;
+
+        public Window1()
+        {
+            InitializeComponent();
+            LoadData();
+        }
+
+        private void LoadData()
+        {
+            db.Материалы.Load(); 
+            материалыList = db.Материалы.Local.ToList();
+            dataGrid.ItemsSource = материалыList;
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            db.Материалы.Add(new Материалы());
+            db.SaveChanges();
+            LoadData();
+        }
+
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGrid.SelectedItem is Материалы item)
+            {
+                db.Материалы.Remove(item);
+                db.SaveChanges();
+                LoadData();
+            }
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            db.SaveChanges();
+            LoadData();
+            MessageBox.Show("Изменения сохранены!");
+        }
+
+        private void Search_Click(object sender, RoutedEventArgs e)
+        {
+            string searchText = searchBox.Text.Trim().ToLower();
+
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                dataGrid.ItemsSource = материалыList;
+                return;
+            }
+
+            var results = материалыList
+                .Where(m => !string.IsNullOrEmpty(m.Название) && m.Название.ToLower().Contains(searchText))
+                .ToList();
+
+            dataGrid.ItemsSource = results;
+        }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            searchBox.Text = "";
+            dataGrid.ItemsSource = материалыList;
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+    }
+}
+
+
+
+
+
+<Window x:Class="DEMO.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DEMO"
+        mc:Ignorable="d"
+        Title="Window1" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Поисковое поле -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+            <TextBox x:Name="searchBox" Width="200" Margin="0,0,10,0"/>
+            <Button Content="Искать" Width="80" Click="Search_Click"/>
+            <Button Content="Сбросить" Width="80" Margin="5,0,0,0" Click="Reset_Click"/>
+        </StackPanel>
+
+        <!-- Сетка с данными -->
+        <DataGrid x:Name="dataGrid"
+                  Grid.Row="1"
+                  AutoGenerateColumns="True"
+                  IsReadOnly="False"
+                  CanUserAddRows="True"
+                  SelectionMode="Single"
+                  Margin="0,0,0,10"/>
+        <!-- Кнопки управления -->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
+            <Button Content="Добавить" Width="90" Margin="5" Click="Add_Click"/>
+            <Button Content="Удалить" Width="90" Margin="5" Click="Delete_Click"/>
+            <Button Content="Сохранить" Width="90" Margin="5" Click="Save_Click"/>
+            <Button Content="Назад" Width="90" Margin="5" Click="Back_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
