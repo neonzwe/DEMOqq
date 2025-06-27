@@ -1,0 +1,35 @@
+<Window x:Class="MosaicApp.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Редактирование таблицы 1" Height="400" Width="600" WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Поисковое поле -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+            <TextBox x:Name="searchBox" Width="200" Margin="0,0,10,0" PlaceholderText="Поиск..."/>
+            <Button Content="Искать" Width="80" Click="Search_Click"/>
+            <Button Content="Сбросить" Width="80" Margin="5,0,0,0" Click="Reset_Click"/>
+        </StackPanel>
+
+        <!-- Сетка с данными -->
+        <DataGrid x:Name="dataGrid"
+                  Grid.Row="1"
+                  AutoGenerateColumns="True"
+                  IsReadOnly="False"
+                  CanUserAddRows="True"
+                  SelectionMode="Single"
+                  Margin="0,0,0,10"/>
+        <!-- Кнопки управления -->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
+            <Button Content="Добавить" Width="90" Margin="5" Click="Add_Click"/>
+            <Button Content="Удалить" Width="90" Margin="5" Click="Delete_Click"/>
+            <Button Content="Сохранить" Width="90" Margin="5" Click="Save_Click"/>
+            <Button Content="Назад" Width="90" Margin="5" Click="Back_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
